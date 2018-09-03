@@ -29,7 +29,6 @@ module.exports = class cobinhood extends Exchange {
                 'fetchWithdrawals': true,
                 'withdraw': false,
                 'fetchMyTrades': true,
-                'editOrder': true,
             },
             'requiredCredentials': {
                 'apiKey': true,
@@ -121,9 +120,6 @@ module.exports = class cobinhood extends Exchange {
                         'wallet/deposit_addresses',
                         'wallet/withdrawal_addresses',
                         'wallet/withdrawals',
-                    ],
-                    'put': [
-                        'trading/orders/{order_id}',
                     ],
                     'delete': [
                         'trading/orders/{order_id}',
@@ -517,17 +513,6 @@ module.exports = class cobinhood extends Exchange {
         let id = order['id'];
         this.orders[id] = order;
         return order;
-    }
-
-    async editOrder (id, symbol, type, side, amount, price, params = {}) {
-        let response = await this.privatePutTradingOrdersOrderId (this.extend ({
-            'order_id': id,
-            'price': this.priceToPrecision (symbol, price),
-            'size': this.amountToString (symbol, amount),
-        }, params));
-        return this.parseOrder (this.extend (response, {
-            'id': id,
-        }));
     }
 
     async cancelOrder (id, symbol = undefined, params = {}) {
